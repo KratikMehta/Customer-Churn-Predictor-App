@@ -32,7 +32,7 @@ st.write("Enter customer details below to predict the likelihood of churn.")
 
 # Layout with columns for a structured UI
 with st.form("churn_form"):
-    col1, col2 = st.columns(2)
+    col1, col2 = st.columns(2, gap='medium')
 
     with col1:
         credit_score = st.number_input(
