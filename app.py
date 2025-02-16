@@ -2,17 +2,28 @@ import pickle
 
 import pandas as pd
 import streamlit as st
-from keras.api.models import load_model
+from keras.api.models import Sequential, load_model
 from sklearn.pipeline import Pipeline
 
-# Load Preprocessing Pipeline & Model
-with open("models/preprocessing_pipeline.pkl", "rb") as f:
-    pipeline: Pipeline = pickle.load(f)
+st.set_page_config(page_title="Customer Churn Predictor", layout="wide")
 
-model = load_model("models/churn_model.keras")
+
+# Load Preprocessing Pipeline & Model
+@st.cache_resource
+def load_pipeline():
+    with open("models/preprocessing_pipeline.pkl", "rb") as f:
+        return pickle.load(f)
+
+
+@st.cache_resource
+def load_churn_model():
+    return load_model("models/churn_model.keras")
+
+
+pipeline: Pipeline = load_pipeline()
+model: Sequential = load_churn_model()
 
 # Streamlit UI Enhancements
-st.set_page_config(page_title="Customer Churn Predictor", layout="wide")
 st.markdown(
     "<h1 style='text-align: center; color: #2E86C1;'>Customer Churn Prediction App 🚀</h1>",
     unsafe_allow_html=True,
