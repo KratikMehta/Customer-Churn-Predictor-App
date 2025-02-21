@@ -1,6 +1,6 @@
 ## 🚀 Customer Churn Prediction App
 
-\
+[![Python](https://img.shields.io/badge/Python-3.8%2B-blue?style=flat&logo=python)](https://www.python.org/)  
 An AI-powered **Customer Churn Prediction App** using **Artificial Neural Networks (ANNs)** to help businesses identify and retain at-risk customers.
 
 ---
