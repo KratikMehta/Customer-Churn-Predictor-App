@@ -20,8 +20,7 @@ def load_churn_model():
     return load_model("models/churn_model.keras")
 
 
-# pipeline: Pipeline = load_pipeline()
-pipeline = load_pipeline()
+pipeline: Pipeline = load_pipeline()
 model: Sequential = load_churn_model()
 
 # Streamlit UI Enhancements
