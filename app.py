@@ -9,7 +9,7 @@ st.set_page_config(page_title="Customer Churn Predictor", layout="wide")
 
 
 # Load Preprocessing Pipeline & Model
-@st.cache_resource
+# @st.cache_resource
 def load_pipeline():
     with open("models/preprocessing_pipeline.pkl", "rb") as f:
         return pickle.load(f)
