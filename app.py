@@ -2,7 +2,7 @@ import pickle
 
 import pandas as pd
 import streamlit as st
-from keras.api.models import Sequential, load_model
+from tensorflow.keras.models import Sequential, load_model
 from sklearn.pipeline import Pipeline
 
 st.set_page_config(page_title="Customer Churn Predictor", layout="wide")
