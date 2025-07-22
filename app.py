@@ -2,15 +2,15 @@ import pickle
 
 import pandas as pd
 import streamlit as st
-from tensorflow.keras.models import Sequential, load_model
-from sklearn.pipeline import Pipeline
+from keras.models import load_model  # type: ignore
+from sklearn.pipeline import Pipeline  # type: ignore
 
 st.set_page_config(page_title="Customer Churn Predictor", layout="wide")
 
 
 # Load Preprocessing Pipeline & Model
 @st.cache_resource
-def load_pipeline():
+def load_pipeline() -> Pipeline:
     with open("models/preprocessing_pipeline.pkl", "rb") as f:
         return pickle.load(f)
 
@@ -20,8 +20,8 @@ def load_churn_model():
     return load_model("models/churn_model.keras")
 
 
-pipeline: Pipeline = load_pipeline()
-model: Sequential = load_churn_model()
+pipeline = load_pipeline()
+model = load_churn_model()
 
 # Streamlit UI Enhancements
 st.markdown(
@@ -43,10 +43,10 @@ with st.form("churn_form"):
             help="Higher score reduces churn risk.",
         )
         geography = st.selectbox(
-            "Geography", pipeline["preprocessor"].transformers_[1][1].categories_[0]
+            "Geography", pipeline.named_steps["preprocessor"].transformers_[1][1].categories_[0]
         )
         gender = st.selectbox(
-            "Gender", pipeline["preprocessor"].transformers_[1][1].categories_[1]
+            "Gender", pipeline.named_steps["preprocessor"].transformers_[1][1].categories_[1]
         )
         age = st.slider(
             "Age", 18, 92, help="Older customers may have different churn behavior."
@@ -97,19 +97,22 @@ if submitted:
     X_new = pipeline.transform(input_data)
 
     # Prediction
-    pred_proba = float(model.predict(X_new)[0][0])
-    prediction = "⚠️ Likely to Churn!" if pred_proba > 0.5 else "✅ Not Likely to Churn!"
+    if model is None:
+        st.error("Churn prediction model could not be loaded. Please check the model file.")
+    else:
+        pred_proba = float(model.predict(X_new)[0][0])
+        prediction = "⚠️ Likely to Churn!" if pred_proba > 0.5 else "✅ Not Likely to Churn!"
 
-    # Display Results
-    st.markdown(
-        "<h3 style='text-align: center;'>Prediction Result</h3>", unsafe_allow_html=True
-    )
-    st.markdown(
-        f"<h2 style='text-align: center; color: {'red' if pred_proba > 0.5 else 'green'};'>{prediction}</h2>",
-        unsafe_allow_html=True,
-    )
+        # Display Results
+        st.markdown(
+            "<h3 style='text-align: center;'>Prediction Result</h3>", unsafe_allow_html=True
+        )
+        st.markdown(
+            f"<h2 style='text-align: center; color: {'red' if pred_proba > 0.5 else 'green'};'>{prediction}</h2>",
+            unsafe_allow_html=True,
+        )
 
-    # Progress Bar
-    st.progress(pred_proba)
+        # Progress Bar
+        st.progress(pred_proba)
 
-    st.write(f"**Churn Probability:** {pred_proba:.2%}")
+        st.write(f"**Churn Probability:** {pred_proba:.2%}")
